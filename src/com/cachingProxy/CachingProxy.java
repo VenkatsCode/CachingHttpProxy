@@ -15,23 +15,21 @@ public class CachingProxy {
 	private volatile boolean running = true;
 	static HashMap<String, File> cacheData;
 	static ArrayList<Thread> requestsInProgress;
-	
+
 	public CachingProxy(int port) {
 		cacheData = new HashMap<>();
 		requestsInProgress = new ArrayList<>();
 
 		try {
 			serverSocket = new ServerSocket(port);
-			System.out.println("Waiting on port " + serverSocket.getLocalPort() + "..");
+			System.out.println("Waiting on port " + serverSocket.getLocalPort()
+					+ "..");
 			running = true;
-		} 
-		catch (SocketException se) {
+		} catch (SocketException se) {
 			se.printStackTrace();
-		}
-		catch (SocketTimeoutException ste) {
+		} catch (SocketTimeoutException ste) {
 			ste.printStackTrace();
-		} 
-		catch (IOException io) {
+		} catch (IOException io) {
 			io.printStackTrace();
 		}
 	}
@@ -40,9 +38,9 @@ public class CachingProxy {
 		CachingProxy cahicngProxy = new CachingProxy(3128);
 		cahicngProxy.openSocket();
 	}
-	
-	public void openSocket(){
-		while(running){
+
+	public void openSocket() {
+		while (running) {
 			try {
 				Socket socket = serverSocket.accept();
 				Thread thread = new Thread(new RequestProcessor(socket));
@@ -54,6 +52,14 @@ public class CachingProxy {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static File getCachedData(String url) {
+		return cacheData.get(url);
+	}
+
+	public static void addToCache(String urlString, File fileToCache) {
+		cacheData.put(urlString, fileToCache);
 	}
 
 }
