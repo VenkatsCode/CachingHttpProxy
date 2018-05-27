@@ -45,6 +45,9 @@ public class CachingProxy {
 		while(running){
 			try {
 				Socket socket = serverSocket.accept();
+				Thread thread = new Thread(new RequestProcessor(socket));
+				requestsInProgress.add(thread);
+				thread.start();
 			} catch (SocketException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
